@@ -35,7 +35,7 @@ const register = async (req, res) => {
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_SECRET_EXPIRES }
+    { expiresIn: "7d" }
   );
   res.cookie('jwt', refreshToken, {
     httpOnly: true, //accessible only by web server
