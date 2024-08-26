@@ -112,10 +112,12 @@ const refresh = (req, res) => {
       if (err) return res.status(403).json({ message: 'Forbidden' });
       const foundUser = await User.findById(decoded.UserInfo.id).exec();
       if (!foundUser) return res.status(401).json({ message: 'Unauthorized' });
+      // إصدار access token جديد مع تضمين الـ role
       const accessToken = jwt.sign(
         {
           UserInfo: {
             id: foundUser._id,
+            role: foundUser.role, // تضمين الـ role
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
