@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
-  const { first_name, last_name, email, password } = req.body;
+  const { first_name, last_name, email, password , role} = req.body;
   if (!first_name || !last_name || !email || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
@@ -18,11 +18,13 @@ const register = async (req, res) => {
     last_name,
     email,
     password: hashedPassword,
+    role: role || 'user' // تعيين الدور
   });
   const accessToken = jwt.sign(
     {
       UserInfo: {
         id: user._id,
+        role: user.role // إضافة الدور إلى التوكن
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -32,6 +34,7 @@ const register = async (req, res) => {
     {
       UserInfo: {
         id: user._id,
+        role: user.role // إضافة الدور إلى التوكن
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
@@ -48,6 +51,7 @@ const register = async (req, res) => {
     email: user.email,
     first_name: user.first_name,
     last_name: user.last_name,
+    role: user.role // إرجاع الدور في الرد
   });
 };
 
@@ -68,6 +72,7 @@ const login = async (req, res) => {
     {
       UserInfo: {
         id: foundUser._id,
+        role: foundUser.role // تضمين الدور في التوكن
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -77,6 +82,7 @@ const login = async (req, res) => {
     {
       UserInfo: {
         id: foundUser._id,
+        role: foundUser.role // تضمين الدور في التوكن
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
@@ -91,6 +97,7 @@ const login = async (req, res) => {
   res.json({
     accessToken,
     email: foundUser.email,
+    role: foundUser.role // إرجاع الدور في الرد
   });
 };
 
